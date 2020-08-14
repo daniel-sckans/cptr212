@@ -37,6 +37,18 @@ int main(int argc, char* argv[argc+1]) {
         }
     }
 
-    printf("Hello, again, world: %d.", ws.ws_row); 
+    // Print the array to the screen.  
+    // This is almost identical to the previous section, and we don't need to store anything in an array if all we're doing is printing.  
+    // %c prints a character (%d instead prints a number).  
+    // usleep() sleeps for a number of microseconds (or one millionth of a second).  
+    // Use fflush(stdout) to print all the output that's waiting in the stdout device (which is what shows up in your terminal).  
+    for(int y = 0; y < ws.ws_row; y++) {
+        for(int x = 0; x < ws.ws_col; x++) {
+            fflush(stdout); 
+            usleep(10000); 
+            printf("%c", tc[y][x]); 
+        }
+    }
+
     return EXIT_SUCCESS; 
 }
