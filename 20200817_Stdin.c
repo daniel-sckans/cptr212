@@ -19,7 +19,9 @@ int main(int argc, char* argv[argc+1]) {
     // The function getchar() is what's known as an IO (in-out) function, and the program will "wait" until the user enters input.  
     char c; 
     while((c = getchar()) != 'q') {
-        if(c != '\n') { // getchar() will also get '\n' (newline) characters.  
+        
+        // getchar() will also get '\n' (newline) characters; we will ignore it.  
+        if(c != '\n') { 
 
             // Iterate through each character of the terminal.  
             for(int y = 0; y < ws.ws_row; y++) {
