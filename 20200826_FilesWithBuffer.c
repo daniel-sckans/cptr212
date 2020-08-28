@@ -56,7 +56,39 @@ int main(int argc, char* argv[argc+1]) {
 
         // We print from the buffer, not from a temporary buffer set from the file.  
         for(int y = 0; y < ws.ws_row - 1; y++) {
-            printf("%s", buf[y + line_number]); 
+            
+            // Here's an example of highlighting an optional search string (passed in as a second argument).  
+
+            // Used in a minute to keep track of the length of the word.  
+            int turn_off_highlight_countdown = 0; 
+            
+            // Print each character one at a time.  
+            // Search for the string along the way.  
+            for(int x = 0; x < strlen(buf[y + line_number]); x++) {
+                if(argv[2]) {
+                    char* test_string = argv[2]; 
+
+                    // We've moved forwards a character; this is superfluous if we're not currently highlighting a text, but it does no real harm to our program as decrementing a character is an incredibly quick operation.  
+                    turn_off_highlight_countdown--; 
+
+                    // Check if the next letters match the string in question with strncmp ("strncmp" means "string n compare" means "compare the next n characters in two strings").  
+                    // We have to use & (the reference operator) in &buf[...] to get the address of each character.  
+                    // We will discuss pointers in the next segment.  
+                    if(strncmp(test_string, &buf[y + line_number][x], strlen(test_string)) == 0) {
+
+                        // ANSI escape code for bright blue background; we'll also discuss this next week.  
+                        printf("\033[48;2;0;0;255m"); 
+
+                        // We've matched the word, so we'll set the countdown to its length.  
+                        turn_off_highlight_countdown = strlen(test_string); 
+                    } 
+                    if(turn_off_highlight_countdown == 0) {
+                        printf("\033[0m"); 
+                    }
+                }
+                printf("%c", buf[y + line_number][x]); 
+            }
+
             if(buf[y + line_number][strlen(buf[y + line_number]) - 1] != '\n') {
                 printf("\n"); 
             }
