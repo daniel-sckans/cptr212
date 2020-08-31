@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 int main(int argc, char* argv[argc + 1]) {
 
@@ -28,6 +29,10 @@ int main(int argc, char* argv[argc + 1]) {
     printf("\033[38;2;0;255;255m"); 
     printf("It was the best of times, it was the blurst of times.\n"); 
 
+    // We'll switch to yellow.  
+    // The ANSI character can be printed on the same line.  
+    printf("\033[38;2;255;255;0mIt was the best of times, it was the blurst of times.\n"); 
+
     // Change the background color now.  
     printf("\033[48;2;0;0;255m"); 
     printf("It was the best of times, it was the blurst of times."); 
@@ -53,6 +58,14 @@ int main(int argc, char* argv[argc + 1]) {
     printf("it was the blurst "); 
     printf("\033[1B"); 
     printf("of times.\n"); 
+
+    // Lastly, we can get fancy effects by introducing variables.  
+    // Here, we'll print one character ("%c") at a time.  
+    // We'll also use the variable x to change the color.  
+    char sample_text[] = "It was the best of times, it was the blurst of times.\n"; 
+    for(int x = 0; x < strlen(sample_text); x++) {
+        printf("\033[38;2;0;%d;%dm%c", x * 5, x * 5, sample_text[x]); 
+    }
 
     return EXIT_SUCCESS; 
 }
