@@ -82,10 +82,14 @@ int main(int argc, char* argv[argc+1]) {
                         // We've matched the word, so we'll set the countdown to its length.  
                         turn_off_highlight_countdown = strlen(test_string); 
                     } 
+
+                    // We've reached the end of the string, turn off highlighting.  
                     if(turn_off_highlight_countdown == 0) {
                         printf("\033[0m"); 
                     }
                 }
+
+                // Finally, print the character.  
                 printf("%c", buf[y + line_number][x]); 
             }
 
