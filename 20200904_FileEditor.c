@@ -71,7 +71,8 @@ int main(int argc, char* argv[argc+1]) {
             // Finally we worry about the escaped character.  
             // For iterating through many contingencies, we should use a switch() instead of long if/else-if/else blocks.  
             // The functionality is the same, but a switch is clearer.  
-            switch(getchar()) {
+            char control_char = getchar(); 
+            switch(control_char) {
                 case 'A':
                     if(1 < y) {
                         y--;
@@ -93,7 +94,6 @@ int main(int argc, char* argv[argc+1]) {
                     }
                     break;
 
-                // Respond to "page up" ('5') and "page down" ('6').  
                 case '5': 
                 case '6': 
 
@@ -102,15 +102,15 @@ int main(int argc, char* argv[argc+1]) {
 
                     // Go up or down.  
                     // This uses the ternary operator ("... ? ... : ..." pattern) for brevity; see the textbook or Google if you're not familiar.  
-                    line_offset = c == '5' ? line_offset - ws.ws_row : line_offset + ws.ws_row; 
+                    line_offset = control_char == '5' ? line_offset - ws.ws_row : line_offset + ws.ws_row; 
 
                     // Check if the input is okay, then print it.  
-                    if(line_offset < 0) {
+                    if (line_offset < 0) {
                         line_offset = 0; 
-                    } else if (lines_in_file < line_offset + ws.ws_row + 1) {
-                        line_offset = lines_in_file - ws.ws_row - 1; 
+                    } else if (lines_in_file < line_offset + ws.ws_row) {
+                        line_offset = lines_in_file - ws.ws_row; 
                     }
-                    printf("\033[2J"); 
+                    printf("\033[1;1H\033[2J"); 
                     for(int y = 0; y < ws.ws_row; y++) {
                         fputs(txt[y + line_offset], stdout); 
                     }
@@ -135,7 +135,7 @@ int main(int argc, char* argv[argc+1]) {
     fflush(stdout); 
 
     // To save the edited file, we just have to print out our buffer.  
-    FILE* txt_out = fopen("ATaleOfThreeCities.txt", "w");
+    FILE* txt_out = fopen("assets/ATaleOfThreeCities.txt", "w");
     if(!txt_out) {
         fprintf(stderr, "Error writing to file file.\n");
         return EXIT_FAILURE;
