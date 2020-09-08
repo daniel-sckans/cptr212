@@ -61,6 +61,12 @@ int main(int argc, char* argv[argc + 1]) {
     int text_offset = 0; 
     char c = '\0'; 
     do {
+
+        // 
+        // This is where to do your text processing.  
+        // 
+
+        // Print the text out.  
         for(int y = 0; y < ws.ws_row; y++) {
             printf("%s", txt[y + text_offset]); 
         }
