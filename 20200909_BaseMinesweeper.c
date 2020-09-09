@@ -39,7 +39,7 @@ int main(int argc, char* argv[argc + 1]) {
             // If the remainder of that random number divided by 0 is 0, save 1 to the buffer.  
             // On average, that will happen one in 25 times.  
             // Otherwise, save 0.  
-            buffer[y][x] = rand() % 25 == 0; 
+            buffer[y][x] = rand() % 15 == 0; 
 
             // Fill up our screen.  
             printf(" "); 
