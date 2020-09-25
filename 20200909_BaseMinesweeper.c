@@ -75,9 +75,33 @@ int main(int argc, char* argv[argc + 1]) {
                 }
                 break; 
             case 'f': 
-                // Your game logic goes here.  
-                // If the player presses 'f' over a bomb, end the game.  
-                // Otherwise, print the number of nearby bombs.  
+
+                // A bomb was present and the user clicked it, so the game is over.  
+                if(buffer[cursor_y][cursor_x] == 1) {
+                    printf("\033[%d;0H\n\033[2JFailure.\n", ws.ws_row + 1); 
+                    return EXIT_SUCCESS; 
+                }
+
+                // It was a safe click, so count the bombs nearby.  
+                // Iterate through the rows above to the one below, and columns left to right.  
+                int bombs_nearby = 0; 
+                for(int y = cursor_y - 1; y < cursor_y + 2; y++) {
+                    for(int x = cursor_x - 1; x < cursor_x + 2; x++) {
+
+                        // Make sure the y and x values don't go out of bounds from our array.  
+                        if(y < 0 || ws.ws_row - 1 < y) {
+                            break; 
+                        } 
+                        if(x < 0 || ws.ws_col - 1 < x) {
+                            continue; 
+                        }
+
+                        // If there's a bomb, the buffer value is 1.  
+                        // If not, it is 0.  
+                        bombs_nearby += buffer[y][x]; 
+                    }
+                }
+                printf("%d", bombs_nearby); 
                 break; 
         }
 
