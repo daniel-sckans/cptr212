@@ -1,9 +1,20 @@
 #include <windows.h>
 #include <stdio.h>
 
+#define APP_SAVE 9000
+
 LRESULT CALLBACK WndProc(); 
 
+int text_cursor = 0; 
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+
+    FILE* text_cursor_file = fopen("text_cursor.txt", "r"); 
+    if(text_cursor_file) {
+        fscanf(text_cursor_file, "%d", &text_cursor); 
+    }
+    printf("You are at position %d\n", text_cursor); 
+    fclose(text_cursor_file); 
 
     char const*const window_class_name = "sample_window_class"; 
 
@@ -73,30 +84,51 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             menu = CreateMenu(); 
             sub_menu = CreatePopupMenu(); 
 
-            AppendMenu(sub_menu, MF_STRING, (UINT)9000, "&Text that shows up"); 
+            AppendMenu(sub_menu, MF_STRING, (UINT)APP_SAVE, "&Save"); 
             AppendMenu(sub_menu, MF_STRING, (UINT)WM_DESTROY, "&Exit"); 
             AppendMenu(menu, MF_STRING | MF_POPUP, (UINT)sub_menu, "&File"); 
             SetMenu(hwnd, menu); 
-
-            SetWindowText(hwnd, TEXT("This is a text string that I am string printing.")); 
 
             break; 
         }
         case WM_COMMAND: 
             switch(LOWORD(wParam)) {
-                case 9000:
-                    MessageBox(hwnd, "You selected a menu item", "Information", MB_OKCANCEL); 
+                case APP_SAVE: {
+                    FILE* text_cursor_file = fopen("text_cursor.txt", "w"); 
+                    fprintf(text_cursor_file, "%d", text_cursor); 
+                    fflush(text_cursor_file); 
+                    fclose(text_cursor_file); 
+                    MessageBox(hwnd, "You selected a menu item", "Information", MB_OKCANCEL | MB_APPLMODAL); 
                     break; 
+                }
                 case WM_DESTROY: 
                     PostQuitMessage(0); 
                     break; 
             }
             break; 
-        case WM_LBUTTONDOWN: 
-            MessageBox(hwnd, "You clicked", "Information", MB_OK | MB_RIGHT); 
+        case WM_CHAR: {
+            printf("%c", wParam); 
+            if(wParam == 's') {
+                text_cursor++; 
+                printf(" was correct, you are now at position %d", text_cursor); 
+            }
+            printf("\n"); 
+            InvalidateRect(hwnd, NULL, TRUE); 
             break; 
+        }
+        case WM_PAINT: {
+            InvalidateRect(hwnd, NULL, TRUE); 
+            PAINTSTRUCT ps; 
+            HDC hdc = BeginPaint(hwnd, &ps); 
+
+            char buffer[1024] = {0}; 
+            sprintf(buffer, "You are at position %d", text_cursor); 
+            TextOut(hdc, 100, 200, TEXT(buffer), strlen(buffer)); 
+
+            EndPaint(hwnd, &ps); 
+            break; 
+        }
         case WM_CLOSE: {
-            MessageBox(hwnd, "What are you doing, Dave?", "Information", MB_OKCANCEL); 
             DestroyWindow(hwnd); 
             break; 
         }
