@@ -7,6 +7,10 @@ LRESULT CALLBACK WndProc();
 
 int text_cursor = 0; 
 
+FILE* test_text; 
+char test_buffer[32] = {0}; 
+int err_count = 0; 
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
     FILE* text_cursor_file = fopen("text_cursor.txt", "r"); 
@@ -15,6 +19,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
     printf("You are at position %d\n", text_cursor); 
     fclose(text_cursor_file); 
+
+    printf("The file: %p\n", test_text); 
+    test_text = fopen("pi.txt", "r"); 
+    fgets(test_buffer, 32, test_text); 
+    printf("The file: %p\n", test_text); 
 
     char const*const window_class_name = "sample_window_class"; 
 
@@ -108,9 +117,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             break; 
         case WM_CHAR: {
             printf("%c", wParam); 
-            if(wParam == 's') {
+            if(wParam == test_buffer[text_cursor]) {
                 text_cursor++; 
+                if(strlen(test_buffer) <= text_cursor || test_buffer[text_cursor] == '\n') {
+                    fgets(test_buffer, 32, test_text); 
+                    text_cursor = 0; 
+                }
+                printf("The file: %p\n", test_text); 
+
                 printf(" was correct, you are now at position %d", text_cursor); 
+            } else {
+                err_count++; 
             }
             printf("\n"); 
             InvalidateRect(hwnd, NULL, TRUE); 
@@ -124,6 +141,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             char buffer[1024] = {0}; 
             sprintf(buffer, "You are at position %d", text_cursor); 
             TextOut(hdc, 100, 200, TEXT(buffer), strlen(buffer)); 
+            TextOut(hdc, 100, 100, TEXT(test_buffer), strlen(buffer)); 
+            sprintf(buffer, "Errors: %d", err_count); 
+            TextOut(hdc, 100, 300, TEXT(buffer), strlen(buffer)); 
 
             EndPaint(hwnd, &ps); 
             break; 

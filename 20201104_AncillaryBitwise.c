@@ -9,8 +9,8 @@ void print_bits(char c) {
 
 int main(int argc, char** argv) {
 
-    char C = 10; 
-    print_bits(C ^ 4); 
+    print_bits(15); 
+    
 
 
     return EXIT_SUCCESS; 
