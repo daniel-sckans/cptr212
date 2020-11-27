@@ -9,9 +9,12 @@ void print_bits(char c) {
 
 int main(int argc, char** argv) {
 
-    print_bits(15); 
+    print_bits(11); 
+    printf("\n"); 
+    print_bits(5); 
+    printf("\n"); 
+    print_bits(11 ^ 5); 
+    printf("\n"); 
     
-
-
     return EXIT_SUCCESS; 
 }
